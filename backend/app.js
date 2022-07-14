@@ -20,16 +20,14 @@ app.post("/update", function(req, res) {
     const payload = req.body;
     const title = payload.title;
     const content = payload.content;
-    const inbound = payload.inbound;
-    const outbound = payload.outbound;
+    const links = payload.links;
 
     if (!(title in database.notes)) {
         database.notes[title] = {};
     }
 
     database.notes[title].content = content;
-    database.notes[title].inbound = inbound;
-    database.notes[title].outbound = outbound;
+    database.notes[title].links = links;
     
     fs.writeFile(
         "database.json", 
@@ -48,6 +46,20 @@ app.post("/fetch", function(req, res) {
     }
 
     res.end(JSON.stringify(notes));
+});
+
+app.post("/search", function(req, res) {
+    const term = req.body.term;
+
+    const results = [];
+
+    for (let index in database.notes) {
+        if (index.includes(term) || term.includes(index)) {
+            results.push(index);
+        }
+    }
+
+    res.end(JSON.stringify(results));
 });
 
 app.listen(8080);
