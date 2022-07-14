@@ -16,7 +16,7 @@ app.get("/", function(req, res) {
 });
 
 app.use(express.json());
-app.post("/", function(req, res) {
+app.post("/update", function(req, res) {
     const payload = req.body;
     const title = payload.title;
     const content = payload.content;
@@ -36,6 +36,18 @@ app.post("/", function(req, res) {
         JSON.stringify(database, null, 2), 
         err => {}
     );
+});
+
+app.post("/fetch", function(req, res) {
+    const indices = req.body;
+    const notes = {};
+    
+    for (let index of indices) {
+        const note = database.notes[index];
+        notes[index] = note;
+    }
+
+    res.end(JSON.stringify(notes));
 });
 
 app.listen(8080);

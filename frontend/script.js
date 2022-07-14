@@ -18,14 +18,14 @@ function renderNote(index, element) {
     const button = document.createElement("button");
     button.innerText = "Save";
 
-    button.onclick = updateNode;
+    button.onclick = updateNote;
 
     element.appendChild(title);
     element.appendChild(content);
     element.appendChild(button);
 }
 
-function updateNode() {
+async function updateNote() {
     const titleElement = document.querySelector("#title");
     const contentElement = document.querySelector("#content");
 
@@ -36,11 +36,24 @@ function updateNode() {
         "outbound": []
     };
 
-    const xhr = new XMLHttpRequest();
-    xhr.open("POST", "/", "true");
-
-    xhr.setRequestHeader("Content-Type", "application/json");
-    xhr.send(JSON.stringify(payload));
+    const response = await fetch("/update", {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+    });
 }
 
-renderNote("llamas", document.getElementById("note"));
+async function fetchNotes(indices) {
+    const response = await fetch("/fetch", {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(indices)
+    });
+
+    const content = await response.json();
+    return content;
+}
