@@ -1,0 +1,14 @@
+#note {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    /* align-items: center; */
+    background-color: rgb(196, 196, 196);
+    border-radius: 10px;
+    width: 80%;
+    padding: 20px;
+}
+
+*[contenteditable="true"] {
+    outline: none;
+}
