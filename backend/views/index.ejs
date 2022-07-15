@@ -19,13 +19,14 @@
         <div id="note">
             <div id="top">
                 <h1 id="title" contenteditable="true">Title</h1>
-                <button onclick="updateNote()">Save</button>
+                <button onclick="state.current.save()">Save</button>
             </div>
             
             <p id="content" contenteditable="true">Content</p>
             <div id="links"></div>
         </div>
     </div>
+    <script src="note.js"></script>
     <script src="script.js"></script>
 </body>
 </html>

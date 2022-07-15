@@ -38,3 +38,19 @@
     width: 100%;
     align-items: center;
 }
+
+#results {
+    width: 100%;
+}
+
+.linkbox {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.linkbox p {
+    margin: 1px;
+}

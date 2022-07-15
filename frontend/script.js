@@ -1,34 +1,9 @@
 const searchBox = document.querySelector("#searchbox");
 
-const database = {
-    "notes": {}
+const state = {
+    "notes": {},
+    "current": {}
 };
-
-let currentNote = null;
-
-function renderNote(index, element) {
-    const data = database.notes[index];
-
-    const titleElement = document.querySelector("#title");
-    const contentElement = document.querySelector("#content");
-
-    titleElement.innerText = index;
-    contentElement.innerText = data.content;
-
-    const linksElement = document.querySelector("#links");
-
-    clearElement(linksElement);
-    
-    for (let link of data.links) {
-        const button = document.createElement("BUTTON");
-        button.innerText = link;
-        button.onclick = function() {
-            selectResult(link);
-        }
-
-        linksElement.appendChild(button);
-    }
-}
 
 async function request(path, json) {
     const response = await fetch(path, {
@@ -42,25 +17,12 @@ async function request(path, json) {
     return response;
 }
 
-async function updateNote() {
-    const titleElement = document.querySelector("#title");
-    const contentElement = document.querySelector("#content");
-
-    const payload = {
-        "title": titleElement.innerText,
-        "content": contentElement.innerText,
-        "links": []
-    };
-
-    await request("/update", payload);
-}
-
 async function fetchNotes(indices) {
     const response = await request("/fetch", indices);
     const content = await response.json();
 
     for (let index in content) {
-        database.notes[index] = content[index];
+        state.notes[index] = new Note(index, content[index]);
     }
 
     return content;
@@ -77,25 +39,41 @@ async function search() {
     clearElement(resultBox);
     
     for (let index of indices) {
-        const button = document.createElement("BUTTON");
+        const container = document.createElement("DIV");
+        container.classList.add("linkbox");
+        
+        const button = document.createElement("p");
         button.innerText = index;
 
         button.onclick = function() {
             selectResult(index);
         };
 
-        resultBox.appendChild(button);
+        const link = document.createElement("p");
+        link.innerText = "🔗";
+
+        link.onclick = function() {
+            linkNote(index);
+        }
+
+        container.appendChild(button);
+        container.appendChild(link);
+        resultBox.appendChild(container);
     }
 }
 
+function linkNote(index) {
+    state.current.link(index);
+    state.current.render(document.querySelector("#note"));
+}
+
 async function selectResult(index) {
-    if (!(index in database)) {
+    if (!(index in state)) {
         await fetchNotes([index]);
     }
 
-    currentNote = index;
-
-    renderNote(index, document.querySelector("#note"));
+    state.current = state.notes[index];
+    state.current.render(document.querySelector("#note"));
 }
 
 function clearElement(element) {
