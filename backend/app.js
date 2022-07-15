@@ -10,30 +10,35 @@ app.set("view engine", "ejs");
 app.use(express.static("../frontend"));
 
 app.get("/", function(req, res) {
-    res.render("index", {
-        "data": JSON.stringify(database)
-    });
+    res.render("index");
 });
 
 app.use(express.json());
 app.post("/update", function(req, res) {
     const payload = req.body;
+    const id = payload.id || database.index++;
     const title = payload.title;
     const content = payload.content;
     const links = payload.links;
 
-    if (!(title in database.notes)) {
-        database.notes[title] = {};
-    }
-
-    database.notes[title].content = content;
-    database.notes[title].links = links;
+    database.notes[id] = {
+        "title": title,
+        "content": content,
+        "links" : links
+    };
     
     fs.writeFile(
         "database.json", 
         JSON.stringify(database, null, 2), 
         err => {}
     );
+
+    // TODO: Do this a better way
+    const response = {
+        "id": id
+    };
+
+    res.end(JSON.stringify(response));
 });
 
 app.post("/fetch", function(req, res) {
@@ -54,7 +59,8 @@ app.post("/search", function(req, res) {
     const results = [];
 
     for (let index in database.notes) {
-        if (index.includes(term) || term.includes(index)) {
+        const note = database.notes[index];
+        if (note.title.includes(term) || term.includes(note.title)) {
             results.push(index);
         }
     }

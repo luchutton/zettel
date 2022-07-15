@@ -28,10 +28,20 @@ async function fetchNotes(indices) {
     return content;
 }
 
+function updateCurrent() {
+    const titleElement = document.querySelector("#title");
+    const contentElement = document.querySelector("#content");
+
+    state.current.title = titleElement.innerText;
+    state.current.content = contentElement.innerText;
+}
+
 async function save() {
     if (state.current) {
+        updateCurrent();
         state.current.save();
     } else {
+        // TODO: Make create note function to do this less bad
         const titleElement = document.querySelector("#title");
         const contentElement = document.querySelector("#content");
 
@@ -44,7 +54,12 @@ async function save() {
             "links": {}
         };
 
-        request("/update", payload);
+        const response = await request("/update", payload);
+        const json = await response.json();
+        const note = new Note(json.id, payload);
+
+        state.notes[json.id] = note;
+        state.current = note;
     }
 }
 
@@ -55,15 +70,19 @@ async function search() {
     const response = await request("/search", {"term": term});
     const indices = await response.json();
 
+    await fetchNotes(indices);
+
     const resultBox = document.querySelector("#results");
     clearElement(resultBox);
     
     for (let index of indices) {
         const container = document.createElement("DIV");
         container.classList.add("linkbox");
+
+        const note = state.notes[index];
         
         const button = document.createElement("p");
-        button.innerText = index;
+        button.innerText = note.title;
 
         button.onclick = function() {
             selectResult(index);
@@ -88,11 +107,19 @@ function linkNote(index) {
 }
 
 async function selectResult(index) {
-    if (!(index in state)) {
+    if (!(index in state.notes)) {
         await fetchNotes([index]);
     }
 
     state.current = state.notes[index];
+
+    const load = [];
+    for (let index in state.current.links) {
+        load.push(index);
+    }
+
+    fetchNotes(load);
+
     state.current.render(document.querySelector("#note"));
 }
 
