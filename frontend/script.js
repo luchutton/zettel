@@ -2,7 +2,7 @@ const searchBox = document.querySelector("#searchbox");
 
 const state = {
     "notes": {},
-    "current": {}
+    "current": null
 };
 
 async function request(path, json) {
@@ -26,6 +26,26 @@ async function fetchNotes(indices) {
     }
 
     return content;
+}
+
+async function save() {
+    if (state.current) {
+        state.current.save();
+    } else {
+        const titleElement = document.querySelector("#title");
+        const contentElement = document.querySelector("#content");
+
+        const title = titleElement.innerText;
+        const content = contentElement.innerText;
+
+        const payload = {
+            "title": title,
+            "content": content,
+            "links": {}
+        };
+
+        request("/update", payload);
+    }
 }
 
 async function search() {
