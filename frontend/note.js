@@ -7,8 +7,14 @@ class Note {
         this.links = data.links;
     }
 
-    link(index) {
-        this.links[index] = true;
+    linker(index) {
+        if (index === this.id) return;
+
+        if (index in this.links) {
+            delete this.links[index];
+        } else {
+            this.links[index] = true;
+        }
     }
 
     save() {
@@ -22,7 +28,7 @@ class Note {
         request("/update", payload);
     }
 
-    render(container) {
+    render() {
         const titleElement = document.querySelector("#title");
         const contentElement = document.querySelector("#content");
     
@@ -34,13 +40,29 @@ class Note {
         clearElement(linksElement);
         
         for (let link in this.links) {
-            const button = document.createElement("BUTTON");
-            button.innerText = state.notes[link].title;
+            const linked = state.notes[link];
+
+            const container = document.createElement("DIV");
+            container.classList.add("linkbox");
+            
+            const button = document.createElement("p");
+            button.innerText = linked.title;
+    
             button.onclick = function() {
                 selectResult(link);
-            }
+            };
     
-            linksElement.appendChild(button);
+            const deleter = document.createElement("p");
+            deleter.innerText = "×";
+    
+            deleter.onclick = function() {
+                this.linker(link);
+                this.render();
+            }.bind(this);
+    
+            container.appendChild(button);
+            container.appendChild(deleter);
+            linksElement.append(container);
         }
     }
 }

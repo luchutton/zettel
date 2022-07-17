@@ -54,3 +54,8 @@
 .linkbox p {
     margin: 1px;
 }
+
+#links {
+    width: 90%;
+    margin: auto;
+}
