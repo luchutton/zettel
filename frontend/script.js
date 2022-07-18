@@ -92,7 +92,8 @@ async function search() {
         link.innerText = "🔗";
 
         link.onclick = function() {
-            linkNote(index);
+            state.current.linker(index);
+            state.current.render();
         }
 
         container.appendChild(button);
@@ -153,12 +154,14 @@ async function selectResult(index) {
 
     const load = [];
     for (let index in state.current.links) {
+        if (index in state.notes) continue;
+
         load.push(index);
     }
 
-    fetchNotes(load);
+    await fetchNotes(load);
 
-    state.current.render(document.querySelector("#note"));
+    state.current.render();
 }
 
 function clearElement(element) {

@@ -68,3 +68,7 @@ nav {
     display: block; /* For Firefox */
     color: grey;
   }
+#links {
+    width: 90%;
+    margin: auto;
+}
