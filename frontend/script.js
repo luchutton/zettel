@@ -2,7 +2,8 @@ const searchBox = document.querySelector("#searchbox");
 
 const state = {
     "notes": {},
-    "current": null
+    "current": null,
+    "searchResults": []
 };
 
 async function request(path, json) {
@@ -53,34 +54,17 @@ async function search() {
     const indices = await response.json();
 
     await fetchNotes(indices);
+    state.searchResults = [];
 
     const resultBox = document.querySelector("#results");
     clearElement(resultBox);
     
     for (let index of indices) {
-        const container = document.createElement("DIV");
-        container.classList.add("linkbox");
+        const searchResult = new SearchResult(index);
+        const rendered = searchResult.render();
 
-        const note = state.notes[index];
-        
-        const button = document.createElement("p");
-        button.innerText = note.title;
-
-        button.onclick = function() {
-            selectResult(index);
-        };
-
-        const link = document.createElement("p");
-        link.innerText = "🔗";
-
-        link.onclick = function() {
-            state.current.linker(index);
-            state.current.render();
-        }
-
-        container.appendChild(button);
-        container.appendChild(link);
-        resultBox.appendChild(container);
+        resultBox.appendChild(rendered);
+        state.searchResults.push(searchResult);
     }
 }
 
@@ -131,7 +115,7 @@ async function selectResult(index) {
     if (!(index in state.notes)) {
         await fetchNotes([index]);
     }
-
+    
     state.current = state.notes[index];
 
     const load = [];
