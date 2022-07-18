@@ -9,6 +9,10 @@ app.set("view engine", "ejs");
 
 app.use(express.static("../frontend"));
 
+function errorHandler(error) {
+    console.error(error);
+}
+
 app.get("/", function(req, res) {
     res.render("index");
 });
@@ -16,29 +20,34 @@ app.get("/", function(req, res) {
 app.use(express.json());
 app.post("/update", function(req, res) {
     const payload = req.body;
-    const id = payload.id || database.index++;
+    const id = payload.id;
     const title = payload.title;
     const content = payload.content;
     const links = payload.links;
 
-    database.notes[id] = {
-        "title": title,
-        "content": content,
-        "links" : links
-    };
+    if (id) {
+        database.notes[id] = {
+            "title": title,
+            "content": content,
+            "links" : links
+        };
+    } else {
+        const next = database.index++;
+        
+        database.notes[next] = {
+            "title": title,
+            "content": content,
+            "links" : links
+        };
     
+        res.end(JSON.stringify({"id": next}));
+    }
+
     fs.writeFile(
         "database.json", 
         JSON.stringify(database, null, 2), 
-        err => {}
+        errorHandler
     );
-
-    // TODO: Do this a better way
-    const response = {
-        "id": id
-    };
-
-    res.end(JSON.stringify(response));
 });
 
 app.post("/fetch", function(req, res) {

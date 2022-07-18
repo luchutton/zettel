@@ -37,30 +37,12 @@ function updateCurrent() {
 }
 
 async function save() {
-    if (state.current) {
-        updateCurrent();
-        state.current.save();
-    } else {
-        // TODO: Make create note function to do this less bad
-        const titleElement = document.querySelector("#title");
-        const contentElement = document.querySelector("#content");
-
-        const title = titleElement.innerText;
-        const content = contentElement.innerText;
-
-        const payload = {
-            "title": title,
-            "content": content,
-            "links": {}
-        };
-
-        const response = await request("/update", payload);
-        const json = await response.json();
-        const note = new Note(json.id, payload);
-
-        state.notes[json.id] = note;
-        state.current = note;
+    if (!state.current) {
+        await initialiseNote();
     }
+
+    updateCurrent();
+    state.current.save();
 }
 
 async function search() {
@@ -118,31 +100,31 @@ function noteTemplate() {
         );
 }
 
-async function newNote() {
+async function createNote() {
+    state.current = null;
     noteTemplate();
+}
+
+async function initialiseNote() {
     const titleElement = document.querySelector("#title");
     const contentElement = document.querySelector("#content");
 
-        const title = titleElement.innerText;
-        const content = contentElement.innerText;
+    const title = titleElement.innerText;
+    const content = contentElement.innerText;
 
-        const payload = {
-            "title": title,
-            "content": content,
-            "links": {}
-        };
+    const payload = {
+        "title": title,
+        "content": content,
+        "links": {}
+    };
 
-        const response = await request("/update", payload);
-        const json = await response.json();
-        const note = new Note(json.id, payload);
+    const response = await request("/update", payload);
+    const json = await response.json();
 
-        state.notes[json.id] = note;
-        state.current = note;
-}
+    const note = new Note(json.id, payload);
 
-function linkNote(index) {
-    state.current.link(index);
-    state.current.render(document.querySelector("#note"));
+    state.notes[json.id] = note;
+    state.current = note;
 }
 
 async function selectResult(index) {
@@ -161,6 +143,7 @@ async function selectResult(index) {
 
     await fetchNotes(load);
 
+    noteTemplate();
     state.current.render();
 }
 
