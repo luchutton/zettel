@@ -101,6 +101,44 @@ async function search() {
     }
 }
 
+function noteTemplate() {
+    const container = document.querySelector("#note");
+    clearElement(container);
+
+    container.insertAdjacentHTML(
+        "afterbegin",
+        `<div id="top">
+        <h1 id="title" contenteditable="true" placeholder="Title"></h1>
+        <button onclick="save()">Save</button>
+    </div>
+    
+    <p id="content" contenteditable="true" placeholder="Content"></p>
+    <div id="links"></div>`
+        );
+}
+
+async function newNote() {
+    noteTemplate();
+    const titleElement = document.querySelector("#title");
+    const contentElement = document.querySelector("#content");
+
+        const title = titleElement.innerText;
+        const content = contentElement.innerText;
+
+        const payload = {
+            "title": title,
+            "content": content,
+            "links": {}
+        };
+
+        const response = await request("/update", payload);
+        const json = await response.json();
+        const note = new Note(json.id, payload);
+
+        state.notes[json.id] = note;
+        state.current = note;
+}
+
 function linkNote(index) {
     state.current.link(index);
     state.current.render(document.querySelector("#note"));
