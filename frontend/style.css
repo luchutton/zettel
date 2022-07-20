@@ -76,6 +76,11 @@ body {
 
 .linkbox p {
     margin: 1px;
+    cursor: pointer;
+}
+
+.linkbox p:hover {
+    text-decoration: underline;
 }
 
 nav {
@@ -123,4 +128,9 @@ button:hover {
     padding: 5px;
     border-radius: 3px;
     border: 1px solid grey;
+}
+
+.unnamed {
+    font-style: italic;
+    opacity: 0.5;
 }

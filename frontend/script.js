@@ -1,4 +1,5 @@
 const searchBox = document.querySelector("#searchbox");
+const noteElement = document.querySelector("#note");
 
 const state = {
     "notes": {},
@@ -29,20 +30,24 @@ async function fetchNotes(indices) {
     return content;
 }
 
-function updateCurrent() {
-    const titleElement = document.querySelector("#title");
-    const contentElement = document.querySelector("#content");
+// function updateCurrent() {
+//     const titleElement = document.querySelector("#title");
+//     const contentElement = document.querySelector("#content");
 
-    state.current.title = titleElement.innerText;
-    state.current.content = contentElement.innerText;
-}
+//     state.current.title = titleElement.innerText;
+//     state.current.content = contentElement.innerText;
+    
+//     for (let dependent of state.current.dependents) {
+//         dependent.update();
+//     }
+// }
 
 async function save() {
     if (!state.current) {
         await initialiseNote();
     }
 
-    updateCurrent();
+    //updateCurrent();
     state.current.save();
 }
 
@@ -138,3 +143,6 @@ function clearElement(element) {
 }
 
 searchBox.oninput = search;
+noteElement.oninput = function() {
+    state.current.update();
+}

@@ -5,6 +5,20 @@ class Note {
         this.content = data.content;
 
         this.links = data.links;
+
+        this.dependents = [];
+    }
+
+    update() {
+        const titleElement = document.querySelector("#title");
+        const contentElement = document.querySelector("#content");
+
+        this.title = titleElement.innerText;
+        this.content = contentElement.innerText;
+        
+        for (let dependent of this.dependents) {
+            dependent.update();
+        }
     }
 
     linker(index) {
