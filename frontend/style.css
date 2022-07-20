@@ -97,6 +97,11 @@ button {
     font-size: 24px;
     margin-right: 5px;
     border-radius: 3px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #ccc;
 }
 
 [contenteditable=true]:empty:before{
@@ -105,10 +110,12 @@ button {
     display: block; /* For Firefox */
     color: grey;
   }
+
 #links {
-    width: 90%;
-    margin: auto;
-    margin-top: 10px;
+    width: 100%;
+    margin-top: 50px;
+    border-top: 1px solid black;
+    padding-top: 15px;
 }
 
 #searchbox {

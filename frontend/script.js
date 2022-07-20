@@ -76,7 +76,7 @@ function noteTemplate() {
         "afterbegin",
         `<div id="top">
         <h1 id="title" contenteditable="true" placeholder="Title"></h1>
-        <button onclick="save()">Save</button>
+        <button onclick="save()">💾</button>
     </div>
     
     <p id="content" contenteditable="true" placeholder="Content"></p>
