@@ -1,15 +1,34 @@
 class SearchResult {
-    constructor(index, parent) {
+    constructor(index, container, parent) {
         this.index = index;
+        this.container = container;
         this.parent = parent;
+
+        if (!state.notes[index]) fetchNotes([index]);
 
         this.note = state.notes[index];
         this.note.dependents.push(this);
 
         this.children = [];
+        this.expanded = false;
     }
 
-    expand() {}
+    expand() {
+        if (!this.children.length) {
+            for (let link in this.note.links) {
+                const child = new SearchResult(link, document.createElement("DIV"), this);
+                this.children.push(child);
+            }
+        }
+
+        this.expanded = true;
+        this.render();
+    }
+
+    collapse() {
+        this.expanded = false;
+        this.render();
+    }
 
     update() {
         this.title.innerText = this.note.title;
@@ -24,6 +43,8 @@ class SearchResult {
     render() {
         const container = document.createElement("DIV");
         container.classList.add("linkbox");
+
+        clearElement(this.container);
         
         const button = document.createElement("p");
         button.innerText = this.note.title;
@@ -48,17 +69,39 @@ class SearchResult {
         }.bind(this);
     
         const expand = document.createElement("p");
-        expand.innerText = "+";
+        if (this.expanded) {
+            expand.innerText = "-";
     
-        expand.onclick = function() {
-            this.expand();
-        }.bind(this);
+            expand.onclick = function() {
+                this.collapse();
+            }.bind(this);
+        } else {
+            expand.innerText = "+";
     
+            expand.onclick = function() {
+                this.expand();
+            }.bind(this);
+        }
+        
+        container.appendChild(expand);
         container.appendChild(button);
         container.appendChild(link);
 
         this.title = button;
         
-        return container;
+        this.container.appendChild(container);
+
+        if (this.expanded) {
+            const childContainer = document.createElement("DIV");
+            childContainer.classList.add("child");
+            for (let child of this.children) {
+                const rendered = child.render();
+                childContainer.appendChild(rendered);
+            }
+
+            this.container.appendChild(childContainer);
+        }
+
+        return this.container;
     }
 }

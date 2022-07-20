@@ -65,7 +65,7 @@ async function search() {
     clearElement(resultBox);
     
     for (let index of indices) {
-        const searchResult = new SearchResult(index);
+        const searchResult = new SearchResult(index, document.createElement("DIV"));
         const rendered = searchResult.render();
 
         resultBox.appendChild(rendered);
