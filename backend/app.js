@@ -19,7 +19,7 @@ app.post("/update", function(req, res) {
     const content = payload.content;
     const links = payload.links;
 
-    if (id in payload) {
+    if ("id" in payload) {
         database.notes[id] = {
             "title": title,
             "content": content,
