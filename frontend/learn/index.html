@@ -4,26 +4,33 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
-    <title>Zettel</title>
+    <link rel="stylesheet" href="../style.css">
+    <title>Learn</title>
 </head>
 <body>
     <div id="explorer">
         <nav>
-            <button><a href="/learn">Learn</a></button>
-            <button onclick="createNote()">+</button>
+            <button><a href="../">Write</a></button>
         </nav>
         <input type="text" id="searchbox" placeholder="Search">
         <div id="results"></div>
     </div>
     <div class="side">
         <div id="main">
-            <div id="note"></div>
+            <div id="note">
+                <div id="top">
+                    <h1 id="title">Title</h1>
+                </div>
+                
+                <p id="content">Content</p>
+            </div>
         </div>
     </div>
-    <script src="backend.js"></script>
-    <script src="note.js"></script>
-    <script src="search.js"></script>
-    <script src="index.js"></script>
+
+    <script src="../backend.js"></script>
+    <script src="learn.js"></script>
+    <script>
+        fetchSet(2)
+    </script>
 </body>
 </html>
