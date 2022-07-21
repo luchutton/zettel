@@ -141,3 +141,8 @@ button:hover {
     padding-left: 5px;
     border-left: 1px solid black;
 }
+
+button a {
+    color: black;
+    text-decoration: none;
+}

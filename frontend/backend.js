@@ -42,3 +42,12 @@ async function search() {
         state.searchResults.push(searchResult);
     }
 }
+
+async function fetchSet(index) {
+    const response = await request("/learning", {
+        "index": index
+    });
+
+    const json = await response.json();
+    console.log(json);
+}
