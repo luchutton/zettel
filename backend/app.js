@@ -71,5 +71,32 @@ app.post("/search", function(req, res) {
     res.end(JSON.stringify(results));
 });
 
+app.post("/learning", function(req, res) {
+    const index = req.body.index;
+
+    const result = {};
+    const stack = [index];
+
+    while (stack.length > 0) {
+        const next = stack.pop();
+        if (next in result) continue;
+        
+        if (next in database.learning) {
+            result[next] = database.learning[next];
+        }
+
+        const note = database.notes[next];
+
+        for (let link in note.links) {
+            if (link in result) continue;
+
+            stack.push(link);
+        }
+    }
+
+    res.end(JSON.stringify(result));
+});
+
+
 app.listen(8080);
 console.log("http://localhost:8080");
