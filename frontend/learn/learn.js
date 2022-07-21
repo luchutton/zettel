@@ -1,10 +1,10 @@
-const main = document.querySelector(".side");
+const card = document.querySelector("#card");
 const title = document.querySelector("#title");
 const content = document.querySelector("#content");
 
 let side = 0;
 
-main.onclick = function() {
+card.onclick = function() {
     if (side === 0) {
         title.classList.add("hidden");
         content.classList.remove("hidden");
