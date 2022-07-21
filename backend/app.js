@@ -5,17 +5,11 @@ const fs = require("fs");
 
 const database = JSON.parse(fs.readFileSync("database.json"));
 
-app.set("view engine", "ejs");
-
 app.use(express.static("../frontend"));
 
 function errorHandler(error) {
     console.error(error);
 }
-
-app.get("/", function(req, res) {
-    res.render("index");
-});
 
 app.use(express.json());
 app.post("/update", function(req, res) {
