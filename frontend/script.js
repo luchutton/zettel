@@ -34,6 +34,7 @@ function noteTemplate() {
 async function createNote() {
     state.current = null;
     noteTemplate();
+    initialiseNote();
 }
 
 async function initialiseNote() {

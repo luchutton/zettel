@@ -8,7 +8,7 @@ const database = JSON.parse(fs.readFileSync("database.json"));
 app.use(express.static("../frontend"));
 
 function errorHandler(error) {
-    console.error(error);
+    //console.error(error);
 }
 
 app.use(express.json());
@@ -19,7 +19,7 @@ app.post("/update", function(req, res) {
     const content = payload.content;
     const links = payload.links;
 
-    if (id) {
+    if (id in payload) {
         database.notes[id] = {
             "title": title,
             "content": content,
